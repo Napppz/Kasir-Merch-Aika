@@ -18,7 +18,8 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
   if (!transaction) return null;
 
   const isCompleted = transaction.status === 'success' || (transaction.status as string) === 'completed';
-  const totalItemsCount = transaction.items.reduce((s, item) => s + item.quantity, 0);
+  const txItems = transaction.items || [];
+  const totalItemsCount = txItems.reduce((s, item) => s + (item?.quantity || 0), 0);
 
   const getMethodBadge = (m: string) => {
     switch (m.toLowerCase()) {
@@ -206,7 +207,7 @@ export const TransactionDetailModal: React.FC<TransactionDetailModalProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {transaction.items.map((item, idx) => (
+                  {txItems.map((item, idx) => (
                     <tr key={idx}>
                       <td>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

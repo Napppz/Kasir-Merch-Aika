@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Plus, Minus, X, Ticket, FileText, Banknote, ArrowRight } from 'lucide-react';
+import { ShoppingCart, Plus, Minus, X, Ticket, FileText, Banknote, ArrowRight, ArrowLeft } from 'lucide-react';
 import { usePos } from '../../context/PosContext';
 import { formatRupiah } from '../../utils/formatters';
 
-export const CartPanel: React.FC = () => {
+interface CartPanelProps {
+  onBackToCatalog?: () => void;
+}
+
+export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
   const {
     cart,
     cartTotalQty,
@@ -75,6 +79,16 @@ export const CartPanel: React.FC = () => {
       {/* Header */}
       <div className="cart-header">
         <div className="cart-title-wrapper">
+          {onBackToCatalog && (
+            <button 
+              type="button" 
+              className="cart-back-to-catalog-btn"
+              onClick={onBackToCatalog}
+              title="Kembali ke Katalog Produk"
+            >
+              <ArrowLeft size={16} />
+            </button>
+          )}
           <ShoppingCart size={18} className="cart-icon" />
           <h2 className="cart-title">Keranjang Belanja</h2>
           <span className="cart-badge">

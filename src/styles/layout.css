@@ -387,3 +387,122 @@
   font-weight: 600;
   font-size: 11px;
 }
+
+/* ==========================================================================
+   MOBILE & SAFE-AREA RESPONSIVE STYLES
+   ========================================================================== */
+:root {
+  --sat: env(safe-area-inset-top, 0px);
+  --sab: env(safe-area-inset-bottom, 0px);
+}
+
+.mobile-menu-btn {
+  display: none;
+  background: transparent;
+  color: var(--text-main);
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-close-mobile-btn {
+  display: none;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-close-mobile-btn:hover {
+  color: var(--pink);
+  border-color: var(--border-pink);
+}
+
+.pill-text-mobile {
+  display: none;
+}
+
+.mobile-sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .topbar {
+    padding-top: max(8px, var(--sat));
+    padding-left: 12px;
+    padding-right: 12px;
+    gap: 8px;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .sidebar-close-mobile-btn {
+    display: flex;
+  }
+
+  .mobile-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(3, 7, 18, 0.75);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -300px;
+    width: 260px;
+    min-width: 260px;
+    z-index: 100;
+    transition: left 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: none;
+  }
+
+  .sidebar.mobile-open {
+    left: 0;
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.9);
+  }
+
+  .pill-text-desktop {
+    display: none;
+  }
+
+  .pill-text-mobile {
+    display: inline;
+  }
+
+  .event-pill {
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+
+  .bottombar {
+    padding-bottom: max(4px, var(--sab));
+    padding-left: 12px;
+    padding-right: 12px;
+    font-size: 10px;
+    height: auto;
+    min-height: 28px;
+  }
+
+  .shortcuts-guide {
+    display: none;
+  }
+}
+

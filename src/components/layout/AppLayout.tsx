@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { usePos } from '../../context/PosContext';
 import { Sidebar } from './Sidebar';
 import { TopBar } from './TopBar';
@@ -14,14 +14,42 @@ import { CheckoutModal } from '../pos/CheckoutModal';
 import { ThermalReceipt } from '../pos/ThermalReceipt';
 import { ToastContainer } from '../common/Toast';
 import { X } from 'lucide-react';
+import { useCapacitorNative } from '../../hooks/useCapacitorNative';
 
 export const AppLayout: React.FC = () => {
-  const { currentPage, selectedReceiptTx, isCheckoutOpen, closeReceiptModal, settings, toasts, dismissToast } = usePos();
+  const { 
+    currentPage, 
+    setCurrentPage, 
+    selectedReceiptTx, 
+    isCheckoutOpen, 
+    closeCheckout, 
+    closeReceiptModal, 
+    settings, 
+    toasts, 
+    dismissToast 
+  } = usePos();
+
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [mobilePosTab, setMobilePosTab] = useState<'catalog' | 'cart'>('catalog');
+
+  // Capacitor native status bar, splash screen, and safe Android back button
+  useCapacitorNative({
+    isCheckoutOpen,
+    closeCheckout,
+    selectedReceiptTx,
+    closeReceiptModal,
+    isMobileSidebarOpen,
+    setIsMobileSidebarOpen,
+    currentPage,
+    setCurrentPage,
+    mobilePosTab,
+    setMobilePosTab,
+  });
 
   const renderCurrentPage = () => {
     switch (currentPage) {
       case 'pos':
-        return <PosPage />;
+        return <PosPage mobileTab={mobilePosTab} onTabChange={setMobilePosTab} />;
       case 'dashboard':
         return <DashboardPage />;
       case 'transactions':
@@ -35,18 +63,29 @@ export const AppLayout: React.FC = () => {
       case 'settings':
         return <SettingsPage />;
       default:
-        return <PosPage />;
+        return <PosPage mobileTab={mobilePosTab} onTabChange={setMobilePosTab} />;
     }
   };
 
   return (
     <div className="app-container">
+      {/* Mobile Drawer Backdrop */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="mobile-sidebar-backdrop" 
+          onClick={() => setIsMobileSidebarOpen(false)} 
+        />
+      )}
+
       {/* Left Sidebar */}
-      <Sidebar />
+      <Sidebar 
+        isOpen={isMobileSidebarOpen} 
+        onClose={() => setIsMobileSidebarOpen(false)} 
+      />
 
       {/* Main Wrapper */}
       <div className="main-wrapper">
-        <TopBar />
+        <TopBar onToggleMobileSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)} />
         
         <main className="page-body">
           {renderCurrentPage()}

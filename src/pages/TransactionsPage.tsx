@@ -74,7 +74,7 @@ export const TransactionsPage: React.FC = () => {
         const q = searchQuery.toLowerCase().trim();
         const matchInvoice = tx.transactionNumber.toLowerCase().includes(q);
         const matchCashier = tx.cashierName.toLowerCase().includes(q);
-        const matchProduct = tx.items.some(i => i.productName.toLowerCase().includes(q) || (i.sku && i.sku.toLowerCase().includes(q)));
+        const matchProduct = (tx.items || []).some(i => (i?.productName || '').toLowerCase().includes(q) || (i?.sku && i.sku.toLowerCase().includes(q)));
         if (!matchInvoice && !matchCashier && !matchProduct) {
           return false;
         }
@@ -525,11 +525,14 @@ export const TransactionsPage: React.FC = () => {
               <tbody>
                 {filteredTransactions.map(tx => {
                   const isCompleted = isCompletedTransaction(tx);
-                  const itemsCount = tx.items.reduce((s, i) => s + i.quantity, 0);
-                  const firstItem = tx.items[0];
-                  const itemsSummary = tx.items.length === 1 
-                    ? `${firstItem.quantity}x ${firstItem.productName}` 
-                    : `${firstItem.quantity}x ${firstItem.productName} (+${tx.items.length - 1} item lainnya)`;
+                  const txItems = tx.items || [];
+                  const itemsCount = txItems.reduce((s, i) => s + (i?.quantity || 0), 0);
+                  const firstItem = txItems[0];
+                  const itemsSummary = !firstItem
+                    ? 'Tidak ada item'
+                    : txItems.length === 1 
+                      ? `${firstItem.quantity || 1}x ${firstItem.productName || 'Item'}` 
+                      : `${firstItem.quantity || 1}x ${firstItem.productName || 'Item'} (+${txItems.length - 1} item lainnya)`;
 
                   return (
                     <tr

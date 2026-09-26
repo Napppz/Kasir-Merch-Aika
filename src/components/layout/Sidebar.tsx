@@ -8,12 +8,18 @@ import {
   BarChart3, 
   Settings, 
   Lock, 
-  Sparkles 
+  Sparkles,
+  X 
 } from 'lucide-react';
 import { usePos } from '../../context/PosContext';
 import type { NavigationPage } from '../../types';
 
-export const Sidebar: React.FC = () => {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onClose }) => {
   const { currentPage, setCurrentPage, settings, cartTotalQty } = usePos();
 
   const navItems: { id: NavigationPage; label: string; icon: React.FC<{ size?: number }> }[] = [
@@ -26,8 +32,13 @@ export const Sidebar: React.FC = () => {
     { id: 'settings', label: 'Pengaturan', icon: Settings },
   ];
 
+  const handleSelectNav = (page: NavigationPage) => {
+    setCurrentPage(page);
+    if (onClose) onClose();
+  };
+
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'mobile-open' : ''}`}>
       <div>
         {/* Brand Header */}
         <div className="sidebar-header">
@@ -41,7 +52,19 @@ export const Sidebar: React.FC = () => {
                 <span>EVENT TERMINAL</span>
               </div>
             </div>
-            <span className="brand-version">POS v2.4</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="brand-version">POS v2.4</span>
+              {onClose && (
+                <button 
+                  type="button" 
+                  className="sidebar-close-mobile-btn" 
+                  onClick={onClose}
+                  aria-label="Tutup Menu"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -56,7 +79,7 @@ export const Sidebar: React.FC = () => {
                 <li key={item.id}>
                   <button
                     className={`nav-item-btn ${isActive ? 'active' : ''}`}
-                    onClick={() => setCurrentPage(item.id)}
+                    onClick={() => handleSelectNav(item.id)}
                   >
                     <Icon size={18} />
                     <span>{item.label}</span>
