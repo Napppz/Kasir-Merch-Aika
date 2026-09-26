@@ -131,7 +131,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
                     onClick={() => updateCartQuantity(item.product.id, item.quantity - 1)}
                     title="Kurang Qty"
                   >
-                    <Minus size={11} />
+                    <Minus size={15} />
                   </button>
                   <span className="stepper-val">{item.quantity}</span>
                   <button
@@ -141,7 +141,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
                     disabled={item.quantity >= item.product.stock}
                     title="Tambah Qty"
                   >
-                    <Plus size={11} />
+                    <Plus size={15} />
                   </button>
                 </div>
 

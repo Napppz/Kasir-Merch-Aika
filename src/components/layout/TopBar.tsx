@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, WifiOff, HardDrive, Menu } from 'lucide-react';
+import { Clock, WifiOff, Menu } from 'lucide-react';
 import { usePos } from '../../context/PosContext';
 
 interface TopBarProps {
@@ -22,10 +22,10 @@ export const TopBar: React.FC<TopBarProps> = ({ onToggleMobileSidebar }) => {
             <Menu size={20} />
           </button>
         )}
-        <div className="offline-pill">
-          <HardDrive size={13} />
-          <span className="pill-text-desktop">Mode Offline - Data tersimpan di perangkat</span>
-          <span className="pill-text-mobile">Offline</span>
+        <div className="offline-pill" style={{ background: 'rgba(16, 185, 129, 0.12)', borderColor: 'rgba(16, 185, 129, 0.35)', color: '#34d399' }}>
+          <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }}></span>
+          <span className="pill-text-desktop" style={{ fontWeight: 700 }}>Offline Siap • Data Tersimpan Aman</span>
+          <span className="pill-text-mobile" style={{ fontWeight: 700 }}>Offline Siap</span>
         </div>
         <div className="event-pill">
           <span>🎪</span>

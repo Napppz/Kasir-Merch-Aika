@@ -8,11 +8,11 @@ import {
   Check, 
   ArrowLeft,
   RotateCcw,
-  Sparkles,
   Maximize2,
   ShieldCheck,
   CheckCircle2,
-  Smartphone
+  Smartphone,
+  AlertCircle
 } from 'lucide-react';
 import { usePos } from '../../context/PosContext';
 import type { PaymentMethod, Transaction } from '../../types';
@@ -110,40 +110,66 @@ export const CheckoutModal: React.FC = () => {
     return () => window.removeEventListener('keydown', handleModalKeyDown);
   }, [isCheckoutOpen, completedTx, showQrisZoom, cartTotalAmount, handleConfirm, closeCheckout]);
 
-  // Quick cash chips list (Uang Pas, 20k, 50k, 100k, 200k, 500k)
+  // Dynamic thumb-friendly quick cash options
   const quickCashOptions = useMemo(() => {
-    return [
+    const list: { label: string; amount: number; hint: string; isExact?: boolean }[] = [
       {
         label: 'Uang Pas',
         amount: cartTotalAmount,
-        hint: formatRupiah(cartTotalAmount, true, false),
-      },
-      {
-        label: 'Rp 20.000',
-        amount: 20000,
-        hint: 'Pecahan 20k',
-      },
-      {
-        label: 'Rp 50.000',
-        amount: 50000,
-        hint: 'Pecahan 50k',
-      },
-      {
-        label: 'Rp 100.000',
-        amount: 100000,
-        hint: 'Pecahan 100k',
-      },
-      {
-        label: 'Rp 200.000',
-        amount: 200000,
-        hint: '2x 100k',
-      },
-      {
-        label: 'Rp 500.000',
-        amount: 500000,
-        hint: 'Pecahan 500k',
+        hint: 'Kembalian Rp 0',
+        isExact: true,
       },
     ];
+
+    // Rounded to next 50k
+    const next50k = Math.ceil(cartTotalAmount / 50000) * 50000;
+    if (next50k > cartTotalAmount) {
+      list.push({
+        label: formatRupiah(next50k, true, false),
+        amount: next50k,
+        hint: `Kembalian ${formatRupiah(next50k - cartTotalAmount, true, false)}`,
+      });
+    }
+
+    // Standard 50k if total is under 50k and not already in list
+    if (cartTotalAmount < 50000 && !list.some(o => o.amount === 50000)) {
+      list.push({
+        label: 'Rp 50.000',
+        amount: 50000,
+        hint: `Kembalian ${formatRupiah(50000 - cartTotalAmount, true, false)}`,
+      });
+    }
+
+    // Rounded to next 100k
+    const next100k = Math.ceil(cartTotalAmount / 100000) * 100000;
+    if (next100k > cartTotalAmount && !list.some(o => o.amount === next100k)) {
+      list.push({
+        label: formatRupiah(next100k, true, false),
+        amount: next100k,
+        hint: `Kembalian ${formatRupiah(next100k - cartTotalAmount, true, false)}`,
+      });
+    }
+
+    // Standard 100k if total is under 100k and not already in list
+    if (cartTotalAmount < 100000 && !list.some(o => o.amount === 100000)) {
+      list.push({
+        label: 'Rp 100.000',
+        amount: 100000,
+        hint: `Kembalian ${formatRupiah(100000 - cartTotalAmount, true, false)}`,
+      });
+    }
+
+    // Higher presets if total is high
+    const next200k = Math.ceil(cartTotalAmount / 200000) * 200000;
+    if (next200k > cartTotalAmount && !list.some(o => o.amount === next200k) && list.length < 5) {
+      list.push({
+        label: formatRupiah(next200k, true, false),
+        amount: next200k,
+        hint: `Kembalian ${formatRupiah(next200k - cartTotalAmount, true, false)}`,
+      });
+    }
+
+    return list.slice(0, 5);
   }, [cartTotalAmount]);
 
   if (!isCheckoutOpen) return null;
@@ -373,18 +399,31 @@ export const CheckoutModal: React.FC = () => {
 
                 {/* Insufficient Cash Warning Callout */}
                 {isCashInsufficient && cashReceived > 0 && (
-                  <div style={{ fontSize: '11px', color: '#f87171', marginTop: '6px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#f87171', 
+                    background: 'rgba(239, 68, 68, 0.1)',
+                    border: '1px solid rgba(239, 68, 68, 0.3)',
+                    borderRadius: 'var(--radius-sm)',
+                    padding: '8px 12px',
+                    marginTop: '8px', 
+                    fontWeight: 700, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '6px' 
+                  }}>
+                    <AlertCircle size={15} />
                     <span>⚠️ Uang kurang: {formatRupiah(cartTotalAmount - cashReceived, true, false)}</span>
                   </div>
                 )}
 
-                {/* Quick Cash Suggestions */}
+                {/* Quick Cash Suggestions - Thumb Friendly */}
                 <div
                   style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
-                    gap: '6px',
-                    marginTop: '8px',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))',
+                    gap: '8px',
+                    marginTop: '10px',
                   }}
                 >
                   {quickCashOptions.map((opt, idx) => {
@@ -395,15 +434,25 @@ export const CheckoutModal: React.FC = () => {
                         type="button"
                         className="quick-cash-btn"
                         style={{
-                          borderColor: isSelected ? 'var(--pink)' : undefined,
-                          background: isSelected ? 'rgba(236, 72, 153, 0.15)' : undefined,
+                          minHeight: '52px',
+                          padding: '8px 10px',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          gap: '2px',
+                          border: isSelected ? '2px solid var(--pink)' : opt.isExact ? '1.5px solid rgba(6, 182, 212, 0.5)' : '1px solid var(--border-muted)',
+                          background: isSelected ? 'rgba(236, 72, 153, 0.18)' : opt.isExact ? 'rgba(6, 182, 212, 0.1)' : 'var(--bg-card)',
+                          boxShadow: isSelected ? '0 0 12px rgba(236, 72, 153, 0.35)' : undefined,
+                          borderRadius: 'var(--radius-md)',
+                          cursor: 'pointer',
                         }}
                         onClick={() => setCashReceived(opt.amount)}
                       >
-                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#ffffff' }}>
+                        <span style={{ fontSize: '13px', fontWeight: 800, color: isSelected ? '#ffffff' : opt.isExact ? 'var(--cyan)' : '#ffffff' }}>
                           {opt.label}
                         </span>
-                        <span style={{ fontSize: '9px', color: isSelected ? 'var(--pink)' : 'var(--text-dim)' }}>
+                        <span style={{ fontSize: '10px', fontWeight: 600, color: isSelected ? 'var(--pink)' : '#34d399' }}>
                           {opt.hint}
                         </span>
                       </button>
@@ -416,6 +465,26 @@ export const CheckoutModal: React.FC = () => {
             {/* QRIS Official Card Display (If QRIS) */}
             {paymentMethod === 'qris' && (
               <div className="qris-checkout-container">
+                {/* Customer-Facing Prompt Banner */}
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(129, 140, 248, 0.2))',
+                    border: '1px solid rgba(236, 72, 153, 0.45)',
+                    borderRadius: 'var(--radius-md)',
+                    padding: '8px 12px',
+                    marginBottom: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    color: '#f472b6',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                  }}
+                >
+                  <Smartphone size={16} />
+                  <span>📱 Tunjukkan Layar Ini ke Pembeli untuk di-Scan</span>
+                </div>
+
                 <div className="qris-card-wrapper">
                   {/* QR Preview Thumbnail */}
                   <div 
@@ -503,62 +572,126 @@ export const CheckoutModal: React.FC = () => {
               </div>
             )}
 
-            {/* Kembalian / Status Box */}
+            {/* Kembalian / Status Box - Giant Display */}
             {paymentMethod === 'cash' ? (
-              <div className="change-due-box">
-                <div className="cd-left">
-                  <div className="cd-icon">
-                    <RotateCcw size={20} />
-                  </div>
-                  <div>
-                    <div className="cd-label">KEMBALIAN PELANGGAN</div>
-                    <div className="cd-amount">
-                      {formatRupiah(changeAmount, true, false)}
+              isCashInsufficient ? (
+                <div 
+                  className="change-due-box" 
+                  style={{ 
+                    borderColor: 'rgba(239, 68, 68, 0.7)', 
+                    background: 'rgba(239, 68, 68, 0.12)',
+                    boxShadow: '0 0 20px rgba(239, 68, 68, 0.25)',
+                    padding: '16px 20px',
+                  }}
+                >
+                  <div className="cd-left">
+                    <div className="cd-icon" style={{ background: '#ef4444', color: '#ffffff' }}>
+                      <AlertCircle size={24} />
+                    </div>
+                    <div>
+                      <div className="cd-label" style={{ color: '#f87171', fontWeight: 800 }}>⚠️ UANG MASIH KURANG</div>
+                      <div className="cd-amount" style={{ color: '#ffffff', fontSize: '32px', fontWeight: 900 }}>
+                        - {formatRupiah(cartTotalAmount - cashReceived, true, false)}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="cd-drawer-status">
-                  <Sparkles size={14} />
-                  <span>Status Laci Uang: Auto Eject Kick</span>
+                  <div className="cd-drawer-status" style={{ color: '#fca5a5', fontWeight: 700 }}>
+                    <span>Kasir: Minta kekurangan uang tunai dari pembeli</span>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div 
+                  className="change-due-box"
+                  style={{
+                    borderColor: 'rgba(16, 185, 129, 0.75)',
+                    background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.18), rgba(6, 182, 212, 0.18))',
+                    boxShadow: '0 0 30px rgba(16, 185, 129, 0.3)',
+                    padding: '16px 20px',
+                  }}
+                >
+                  <div className="cd-left">
+                    <div className="cd-icon" style={{ background: '#10b981', color: '#ffffff' }}>
+                      <RotateCcw size={24} />
+                    </div>
+                    <div>
+                      <div className="cd-label" style={{ color: '#34d399', fontWeight: 800, fontSize: '13px' }}>
+                        UANG KEMBALIAN PEMBELI
+                      </div>
+                      <div 
+                        className="cd-amount" 
+                        style={{ 
+                          color: '#ffffff', 
+                          fontSize: '36px', 
+                          fontWeight: 900, 
+                          textShadow: '0 0 20px rgba(52, 211, 153, 0.6)' 
+                        }}
+                      >
+                        {formatRupiah(changeAmount, true, false)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="cd-drawer-status" style={{ color: '#a7f3d0', fontWeight: 700 }}>
+                    {changeAmount === 0 ? (
+                      <span>✅ Uang Pas Diterima (Tanpa Kembalian)</span>
+                    ) : (
+                      <span>💵 Serahkan uang kembalian ke pembeli</span>
+                    )}
+                  </div>
+                </div>
+              )
             ) : paymentMethod === 'qris' ? (
-              <div className="change-due-box" style={{ borderColor: 'rgba(236, 72, 153, 0.35)', background: 'rgba(236, 72, 153, 0.08)' }}>
+              <div 
+                className="change-due-box" 
+                style={{ 
+                  borderColor: 'rgba(236, 72, 153, 0.5)', 
+                  background: 'rgba(236, 72, 153, 0.12)',
+                  boxShadow: '0 0 25px rgba(236, 72, 153, 0.25)',
+                  padding: '16px 20px',
+                }}
+              >
                 <div className="cd-left">
                   <div className="cd-icon" style={{ background: 'var(--pink)', color: '#ffffff' }}>
-                    <QrCode size={20} />
+                    <QrCode size={24} />
                   </div>
                   <div>
-                    <div className="cd-label" style={{ color: 'var(--pink)' }}>PEMBAYARAN QRIS TERVERIFIKASI</div>
-                    <div className="cd-amount" style={{ color: '#f472b6', textShadow: '0 0 15px rgba(236, 72, 153, 0.3)' }}>
+                    <div className="cd-label" style={{ color: 'var(--pink)', fontWeight: 800 }}>PEMBAYARAN QRIS</div>
+                    <div className="cd-amount" style={{ color: '#ffffff', fontSize: '32px', fontWeight: 900, textShadow: '0 0 20px rgba(236, 72, 153, 0.5)' }}>
                       {formatRupiah(cartTotalAmount, true, false)}
                     </div>
                   </div>
                 </div>
 
-                <div className="cd-drawer-status" style={{ color: '#f472b6' }}>
-                  <CheckCircle2 size={14} color="#34d399" />
-                  <span>Metode: QRIS Digital Pas (Tanpa Kembalian)</span>
+                <div className="cd-drawer-status" style={{ color: '#f472b6', fontWeight: 700 }}>
+                  <CheckCircle2 size={16} color="#34d399" />
+                  <span>QRIS Pas (Tanpa Kembalian)</span>
                 </div>
               </div>
             ) : (
-              <div className="change-due-box" style={{ borderColor: 'rgba(129, 140, 248, 0.35)', background: 'rgba(129, 140, 248, 0.08)' }}>
+              <div 
+                className="change-due-box" 
+                style={{ 
+                  borderColor: 'rgba(129, 140, 248, 0.5)', 
+                  background: 'rgba(129, 140, 248, 0.12)',
+                  padding: '16px 20px',
+                }}
+              >
                 <div className="cd-left">
                   <div className="cd-icon" style={{ background: '#6366f1', color: '#ffffff' }}>
-                    <Building2 size={20} />
+                    <Building2 size={24} />
                   </div>
                   <div>
-                    <div className="cd-label" style={{ color: '#818cf8' }}>PEMBAYARAN TRANSFER BANK</div>
-                    <div className="cd-amount" style={{ color: '#a5b4fc', textShadow: '0 0 15px rgba(129, 140, 248, 0.3)' }}>
+                    <div className="cd-label" style={{ color: '#818cf8', fontWeight: 800 }}>TRANSFER BANK</div>
+                    <div className="cd-amount" style={{ color: '#ffffff', fontSize: '32px', fontWeight: 900 }}>
                       {formatRupiah(cartTotalAmount, true, false)}
                     </div>
                   </div>
                 </div>
 
-                <div className="cd-drawer-status" style={{ color: '#a5b4fc' }}>
-                  <CheckCircle2 size={14} color="#34d399" />
-                  <span>Metode: Transfer Bank Pas (Tanpa Kembalian)</span>
+                <div className="cd-drawer-status" style={{ color: '#a5b4fc', fontWeight: 700 }}>
+                  <CheckCircle2 size={16} color="#34d399" />
+                  <span>Transfer Pas (Tanpa Kembalian)</span>
                 </div>
               </div>
             )}
@@ -571,7 +704,7 @@ export const CheckoutModal: React.FC = () => {
                 onClick={closeCheckout}
               >
                 <ArrowLeft size={14} />
-                <span>Esc Batal</span>
+                <span>Batal</span>
               </button>
 
               <button
@@ -579,6 +712,11 @@ export const CheckoutModal: React.FC = () => {
                 className="modal-confirm-pay-btn"
                 disabled={isCashInsufficient || isProcessing || completedTx !== null}
                 onClick={handleConfirm}
+                style={
+                  paymentMethod === 'qris'
+                    ? { background: 'linear-gradient(135deg, #db2777, #ec4899)', boxShadow: '0 0 20px rgba(236, 72, 153, 0.5)' }
+                    : undefined
+                }
               >
                 {completedTx ? (
                   <>
@@ -591,13 +729,19 @@ export const CheckoutModal: React.FC = () => {
                   </>
                 ) : isCashInsufficient ? (
                   <>
-                    <span>Uang Kurang {formatRupiah(cartTotalAmount - cashReceived, true, false)}</span>
+                    <AlertCircle size={18} />
+                    <span>Uang Masih Kurang ({formatRupiah(cartTotalAmount - cashReceived, true, false)})</span>
+                  </>
+                ) : paymentMethod === 'qris' ? (
+                  <>
+                    <Check size={20} />
+                    <span>✅ Pembeli Sudah Scan & Bayar ({formatRupiah(cartTotalAmount, true, false)})</span>
                   </>
                 ) : (
                   <>
-                    <Check size={18} />
+                    <Check size={20} />
                     <span>Konfirmasi Pembayaran & Cetak Struk</span>
-                    <span className="key-badge" style={{ background: 'rgba(255,255,255,0.2)', color: 'white' }}>
+                    <span className="key-badge" style={{ background: 'rgba(255,255,255,0.25)', color: 'white' }}>
                       Enter ↵
                     </span>
                   </>

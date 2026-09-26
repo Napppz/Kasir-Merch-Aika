@@ -26,20 +26,20 @@ export const PosPage: React.FC<PosPageProps> = ({
           <h2>
             <ShoppingBag size={20} color="var(--primary-light)" />
             <span>Kasir POS Booth</span>
-            <span className="event-tag-badge">COMIC FEST 2026</span>
+            <span className="event-tag-badge">{settings.eventName || 'COMIC FEST 2026'}</span>
           </h2>
           <div className="subheader-subtitle">
-            Terminal Kasir Eksekutif • Transaksi Berkecepatan Tinggi Offline-First
+            Pilih merchandise, masukkan ke keranjang, dan proses pembayaran cepat
           </div>
         </div>
 
         <div className="subheader-right-info">
-          <div className="db-status-pill">
-            <span className="sync-dot"></span>
-            <span>Offline Mode — Transaksi tersimpan lokal di IndexedDB</span>
+          <div className="db-status-pill" style={{ background: 'rgba(16, 185, 129, 0.08)', borderColor: 'rgba(16, 185, 129, 0.28)', color: '#34d399' }}>
+            <span className="sync-dot" style={{ background: '#10b981', boxShadow: '0 0 6px #10b981' }}></span>
+            <span>Kasir Siap • Data Tersimpan di HP</span>
           </div>
-          <div className="session-id-pill">
-            <span>ID Sesi: {settings.terminalId}</span>
+          <div className="session-id-pill" style={{ color: 'var(--text-secondary)' }}>
+            <span>👤 Kasir: {settings.cashierName}</span>
           </div>
         </div>
       </div>
