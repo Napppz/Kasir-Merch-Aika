@@ -21,3 +21,10 @@ android/.idea/
 android/*.iml
 *.apk
 *.aab
+
+# Keystore & Signing Secrets (NEVER commit to repository)
+*.jks
+*.keystore
+keystore.properties
+*.key
+
