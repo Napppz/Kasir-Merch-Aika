@@ -8,6 +8,7 @@ import { LastBackupCard } from '../components/settings/LastBackupCard';
 import { BackupActionCard } from '../components/settings/BackupActionCard';
 import { RestoreCard } from '../components/settings/RestoreCard';
 import { DangerZone } from '../components/settings/DangerZone';
+import { QuickCashConfigCard } from '../components/settings/QuickCashConfigCard';
 
 export const SettingsPage: React.FC = () => {
   const { settings, refreshAllData, addToast } = usePos();
@@ -236,6 +237,9 @@ export const SettingsPage: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* SECTION: QUICK CASH NOMINALS CONFIGURATION */}
+          <QuickCashConfigCard />
 
           {/* SECTION: DATA & BACKUP (BAGIAN 7) */}
           <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '20px' }}>

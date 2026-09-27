@@ -1,10 +1,11 @@
 import React from 'react';
-import { ShoppingBag, ShoppingCart } from 'lucide-react';
+import { ShoppingBag, ShoppingCart, Banknote } from 'lucide-react';
 import { usePos } from '../context/PosContext';
 import { SearchBar } from '../components/pos/SearchBar';
 import { CategoryBar } from '../components/pos/CategoryBar';
 import { ProductGrid } from '../components/pos/ProductGrid';
 import { CartPanel } from '../components/pos/CartPanel';
+import { RecentTransactionsMini } from '../components/pos/RecentTransactionsMini';
 import { formatRupiah } from '../utils/formatters';
 
 interface PosPageProps {
@@ -16,12 +17,12 @@ export const PosPage: React.FC<PosPageProps> = ({
   mobileTab = 'catalog', 
   onTabChange 
 }) => {
-  const { settings, cartTotalQty, cartTotalAmount } = usePos();
+  const { settings, cartTotalQty, cartTotalAmount, openCheckout } = usePos();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
       {/* Subheader */}
-      <div className="page-subheader">
+      <div className={`page-subheader ${mobileTab === 'cart' ? 'hide-on-mobile-cart' : ''}`}>
         <div className="subheader-title-group">
           <h2>
             <ShoppingBag size={20} color="var(--primary-light)" />
@@ -74,23 +75,36 @@ export const PosPage: React.FC<PosPageProps> = ({
         <section className="pos-main-section">
           <SearchBar />
           <CategoryBar />
+          <RecentTransactionsMini />
           <ProductGrid />
 
           {/* Sticky floating cart bar on mobile when items in cart */}
           {cartTotalQty > 0 && (
             <div className="mobile-floating-cart-bar">
               <div className="mobile-cart-summary">
-                <span className="mobile-cart-count">{cartTotalQty} Item</span>
+                <span className="mobile-cart-count">{cartTotalQty} Item dipilih</span>
                 <span className="mobile-cart-total">{formatRupiah(cartTotalAmount)}</span>
               </div>
-              <button 
-                type="button" 
-                className="mobile-view-cart-btn"
-                onClick={() => onTabChange?.('cart')}
-              >
-                <span>Lihat Keranjang</span>
-                <ShoppingCart size={16} />
-              </button>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <button 
+                  type="button" 
+                  className="mobile-view-cart-btn"
+                  onClick={() => onTabChange?.('cart')}
+                  title="Lihat Rincian Keranjang"
+                >
+                  <ShoppingCart size={14} />
+                  <span>Rincian</span>
+                </button>
+                <button 
+                  type="button" 
+                  className="mobile-direct-pay-btn"
+                  onClick={() => openCheckout()}
+                  title="Bayar Sekarang"
+                >
+                  <Banknote size={15} />
+                  <span>BAYAR</span>
+                </button>
+              </div>
             </div>
           )}
         </section>

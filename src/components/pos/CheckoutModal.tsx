@@ -30,6 +30,7 @@ export const CheckoutModal: React.FC = () => {
     transactionNote,
     transactions,
     isCheckoutOpen,
+    checkoutInitialCash,
     closeCheckout,
     processPayment,
   } = usePos();
@@ -40,14 +41,14 @@ export const CheckoutModal: React.FC = () => {
   const [completedTx, setCompletedTx] = useState<Transaction | null>(null);
   const [showQrisZoom, setShowQrisZoom] = useState<boolean>(false);
 
-  // Initialize cash received to exact total amount whenever checkout opens
+  // Initialize cash received (use preset quick cash if triggered from POS cart, else exact amount)
   useEffect(() => {
     if (isCheckoutOpen) {
-      setCashReceived(cartTotalAmount);
+      setCashReceived(checkoutInitialCash !== null && checkoutInitialCash !== undefined ? checkoutInitialCash : cartTotalAmount);
       setCompletedTx(null);
       setShowQrisZoom(false);
     }
-  }, [isCheckoutOpen, cartTotalAmount]);
+  }, [isCheckoutOpen, cartTotalAmount, checkoutInitialCash]);
 
   const changeAmount = Math.max(0, cashReceived - cartTotalAmount);
   const isCashInsufficient = paymentMethod === 'cash' && cashReceived < cartTotalAmount;
@@ -110,7 +111,7 @@ export const CheckoutModal: React.FC = () => {
     return () => window.removeEventListener('keydown', handleModalKeyDown);
   }, [isCheckoutOpen, completedTx, showQrisZoom, cartTotalAmount, handleConfirm, closeCheckout]);
 
-  // Dynamic thumb-friendly quick cash options
+  // Dynamic thumb-friendly quick cash options (supports admin custom presets from settings)
   const quickCashOptions = useMemo(() => {
     const list: { label: string; amount: number; hint: string; isExact?: boolean }[] = [
       {
@@ -121,56 +122,53 @@ export const CheckoutModal: React.FC = () => {
       },
     ];
 
-    // Rounded to next 50k
-    const next50k = Math.ceil(cartTotalAmount / 50000) * 50000;
-    if (next50k > cartTotalAmount) {
-      list.push({
-        label: formatRupiah(next50k, true, false),
-        amount: next50k,
-        hint: `Kembalian ${formatRupiah(next50k - cartTotalAmount, true, false)}`,
-      });
+    // If custom denominations set in settings, add those greater than cartTotalAmount
+    if (settings.quickCashAmounts && settings.quickCashAmounts.length > 0) {
+      const customOptions = settings.quickCashAmounts
+        .filter((amt) => amt > cartTotalAmount)
+        .sort((a, b) => a - b);
+
+      for (const amt of customOptions) {
+        list.push({
+          label: formatRupiah(amt, true, false),
+          amount: amt,
+          hint: `Kembalian ${formatRupiah(amt - cartTotalAmount, true, false)}`,
+        });
+      }
     }
 
-    // Standard 50k if total is under 50k and not already in list
-    if (cartTotalAmount < 50000 && !list.some(o => o.amount === 50000)) {
-      list.push({
-        label: 'Rp 50.000',
-        amount: 50000,
-        hint: `Kembalian ${formatRupiah(50000 - cartTotalAmount, true, false)}`,
-      });
-    }
+    // If only "Uang Pas" or less than 3 options, calculate smart rounded suggestions
+    if (list.length < 3) {
+      const next50k = Math.ceil(cartTotalAmount / 50000) * 50000;
+      if (next50k > cartTotalAmount && !list.some((o) => o.amount === next50k)) {
+        list.push({
+          label: formatRupiah(next50k, true, false),
+          amount: next50k,
+          hint: `Kembalian ${formatRupiah(next50k - cartTotalAmount, true, false)}`,
+        });
+      }
 
-    // Rounded to next 100k
-    const next100k = Math.ceil(cartTotalAmount / 100000) * 100000;
-    if (next100k > cartTotalAmount && !list.some(o => o.amount === next100k)) {
-      list.push({
-        label: formatRupiah(next100k, true, false),
-        amount: next100k,
-        hint: `Kembalian ${formatRupiah(next100k - cartTotalAmount, true, false)}`,
-      });
-    }
+      const next100k = Math.ceil(cartTotalAmount / 100000) * 100000;
+      if (next100k > cartTotalAmount && !list.some((o) => o.amount === next100k)) {
+        list.push({
+          label: formatRupiah(next100k, true, false),
+          amount: next100k,
+          hint: `Kembalian ${formatRupiah(next100k - cartTotalAmount, true, false)}`,
+        });
+      }
 
-    // Standard 100k if total is under 100k and not already in list
-    if (cartTotalAmount < 100000 && !list.some(o => o.amount === 100000)) {
-      list.push({
-        label: 'Rp 100.000',
-        amount: 100000,
-        hint: `Kembalian ${formatRupiah(100000 - cartTotalAmount, true, false)}`,
-      });
-    }
-
-    // Higher presets if total is high
-    const next200k = Math.ceil(cartTotalAmount / 200000) * 200000;
-    if (next200k > cartTotalAmount && !list.some(o => o.amount === next200k) && list.length < 5) {
-      list.push({
-        label: formatRupiah(next200k, true, false),
-        amount: next200k,
-        hint: `Kembalian ${formatRupiah(next200k - cartTotalAmount, true, false)}`,
-      });
+      const next200k = Math.ceil(cartTotalAmount / 200000) * 200000;
+      if (next200k > cartTotalAmount && !list.some((o) => o.amount === next200k)) {
+        list.push({
+          label: formatRupiah(next200k, true, false),
+          amount: next200k,
+          hint: `Kembalian ${formatRupiah(next200k - cartTotalAmount, true, false)}`,
+        });
+      }
     }
 
     return list.slice(0, 5);
-  }, [cartTotalAmount]);
+  }, [cartTotalAmount, settings.quickCashAmounts]);
 
   if (!isCheckoutOpen) return null;
 
@@ -205,7 +203,7 @@ export const CheckoutModal: React.FC = () => {
     <>
       <div className="modal-overlay" onClick={closeCheckout}>
       <div className="checkout-modal-card" onClick={(e) => e.stopPropagation()}>
-        <div className="checkout-modal-body">
+        <div className={`checkout-modal-body ${completedTx ? 'tx-completed' : ''}`}>
           {/* Left Column: Payment Config & Details */}
           <div className="checkout-payment-side">
             {/* Modal Header */}

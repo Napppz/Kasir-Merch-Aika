@@ -22,6 +22,8 @@ allprojects {
         google()
         mavenCentral()
     }
+    def tempBuildDir = "${System.getenv('TEMP')}/cosplaypos-build/${project.name}"
+    layout.buildDirectory.set(file(tempBuildDir))
 }
 
 task clean(type: Delete) {

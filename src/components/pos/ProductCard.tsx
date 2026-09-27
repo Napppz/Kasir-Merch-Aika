@@ -27,7 +27,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <div
-      className={`product-card ${isOutOfStock ? 'out-of-stock' : ''}`}
+      className={`product-card ${isOutOfStock ? 'out-of-stock' : ''} ${isLowStock ? 'low-stock-card' : ''}`}
       style={isOutOfStock ? { opacity: 0.55, cursor: 'not-allowed', filter: 'grayscale(0.6)' } : undefined}
       onClick={handleAdd}
     >

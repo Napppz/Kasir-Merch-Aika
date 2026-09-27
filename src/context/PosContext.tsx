@@ -35,6 +35,7 @@ interface PosContextType {
   settings: BoothSettings;
   currentPage: NavigationPage;
   isCheckoutOpen: boolean;
+  checkoutInitialCash: number | null;
   selectedReceiptTx: Transaction | null;
   currentTimeString: string;
   toasts: ToastMessage[];
@@ -61,7 +62,7 @@ interface PosContextType {
   removeFromCart: (productId: string) => void;
   clearCart: () => void;
   
-  openCheckout: () => void;
+  openCheckout: (initialCash?: number) => void;
   closeCheckout: () => void;
   openReceiptModal: (tx: Transaction) => void;
   closeReceiptModal: () => void;
@@ -116,6 +117,7 @@ interface PosContextType {
   addToast: (message: string, type?: 'success' | 'error' | 'info') => void;
   dismissToast: (id: string) => void;
   refreshAllData: () => Promise<void>;
+  updateSettings: (newSettings: Partial<BoothSettings>) => Promise<boolean>;
   
   // Computed
   cartTotalQty: number;
@@ -138,6 +140,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [settings, setSettings] = useState<BoothSettings>(INITIAL_BOOTH_SETTINGS);
   const [currentPage, setCurrentPage] = useState<NavigationPage>('pos');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [checkoutInitialCash, setCheckoutInitialCash] = useState<number | null>(null);
   const [selectedReceiptTx, setSelectedReceiptTx] = useState<Transaction | null>(null);
   const [currentTimeString, setCurrentTimeString] = useState<string>('14:28:05 WIB');
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
@@ -181,6 +184,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setSettings({
           ...INITIAL_BOOTH_SETTINGS,
           ...sets,
+          quickCashAmounts: sets.quickCashAmounts || INITIAL_BOOTH_SETTINGS.quickCashAmounts || [10000, 20000, 50000, 100000],
           qrisMerchantName: sets.qrisMerchantName || INITIAL_BOOTH_SETTINGS.qrisMerchantName,
           qrisNmid: sets.qrisNmid || INITIAL_BOOTH_SETTINGS.qrisNmid,
           qrisTerminalCode: sets.qrisTerminalCode || INITIAL_BOOTH_SETTINGS.qrisTerminalCode,
@@ -291,13 +295,15 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return false;
   }, [cartSubtotal]);
 
-  const openCheckout = useCallback(() => {
+  const openCheckout = useCallback((initialCash?: number) => {
     if (cart.length === 0) return;
+    setCheckoutInitialCash(initialCash !== undefined ? initialCash : null);
     setIsCheckoutOpen(true);
   }, [cart.length]);
 
   const closeCheckout = useCallback(() => {
     setIsCheckoutOpen(false);
+    setCheckoutInitialCash(null);
   }, []);
 
   const openReceiptModal = useCallback((tx: Transaction) => {
@@ -590,6 +596,21 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setDiscountCode('');
     setTransactionNote('');
   }, []);
+
+  // Update booth settings and persist to IndexedDB
+  const updateSettings = useCallback(async (newSettings: Partial<BoothSettings>): Promise<boolean> => {
+    try {
+      const merged = { ...settings, ...newSettings };
+      setSettings(merged);
+      await offlineDB.saveSettings(merged);
+      addToast('Pengaturan berhasil diperbarui', 'success');
+      return true;
+    } catch (err) {
+      console.error('Failed to update settings:', err);
+      addToast('Gagal menyimpan pengaturan', 'error');
+      return false;
+    }
+  }, [settings, addToast]);
 
   // Helpers for Stock Movement
   const getLastProductMovement = useCallback((productId: string): StockMovement | undefined => {
@@ -1145,6 +1166,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         settings,
         currentPage,
         isCheckoutOpen,
+        checkoutInitialCash,
         selectedReceiptTx,
         currentTimeString,
         toasts,
@@ -1198,6 +1220,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addToast,
         dismissToast,
         refreshAllData,
+        updateSettings,
         cartTotalQty,
         cartSubtotal,
         cartTotalAmount,

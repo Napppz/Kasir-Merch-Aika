@@ -77,6 +77,7 @@ export interface BoothSettings {
   qrisNmid?: string;
   qrisTerminalCode?: string;
   qrisImageUrl?: string;
+  quickCashAmounts?: number[]; // Custom Quick Cash amounts, e.g. [10000, 20000, 50000, 100000]
 }
 
 export type NavigationPage = 

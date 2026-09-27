@@ -26,6 +26,10 @@ export const ProductGrid: React.FC = () => {
     });
   }, [products, activeCategory, searchQuery]);
 
+  const lowStockCount = useMemo(() => {
+    return products.filter((p) => p.isActive && p.stock > 0 && p.stock <= Math.max(4, p.minimumStock)).length;
+  }, [products]);
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
       {/* Legend & Count Bar */}
@@ -38,13 +42,13 @@ export const ProductGrid: React.FC = () => {
             <span className="legend-dot ready"></span>
             <span>Ready Stock</span>
           </div>
-          <div className="legend-item">
+          <div className="legend-item" style={lowStockCount > 0 ? { color: '#f59e0b', fontWeight: 700 } : undefined}>
             <span className="legend-dot low"></span>
-            <span>Low Stock</span>
+            <span>Stok Menipis {lowStockCount > 0 ? `(${lowStockCount})` : ''}</span>
           </div>
           <div className="legend-item">
             <span className="legend-dot out"></span>
-            <span>Out of Stock</span>
+            <span>Habis</span>
           </div>
         </div>
       </div>

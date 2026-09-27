@@ -216,6 +216,7 @@ export const INITIAL_BOOTH_SETTINGS: BoothSettings = {
   qrisNmid: 'ID1025440784557',
   qrisTerminalCode: 'A01',
   qrisImageUrl: '/qris.png',
+  quickCashAmounts: [10000, 20000, 50000, 100000],
 };
 
 export const INITIAL_TRANSACTIONS: Transaction[] = [

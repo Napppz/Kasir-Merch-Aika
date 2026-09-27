@@ -16,6 +16,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
     discountCode,
     cartTotalAmount,
     transactionNote,
+    settings,
     setTransactionNote,
     updateCartQuantity,
     removeFromCart,
@@ -39,7 +40,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
     setTimeout(() => setCouponFeedback(null), 3000);
   };
 
-  // Quick cash calculations based on cartTotalAmount
+  // Quick cash: use custom amounts from settings if available, else auto-suggest
   const getQuickCashSuggestions = () => {
     if (cartTotalAmount <= 0) return [];
     const suggestions: { label: string; amount: number; change: number }[] = [];
@@ -51,23 +52,39 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
       change: 0,
     });
 
-    // 2. Next 50k / 100k
-    const next50k = Math.ceil(cartTotalAmount / 50000) * 50000;
-    const secondOption = next50k === cartTotalAmount ? next50k + 50000 : next50k;
-    suggestions.push({
-      label: formatRupiah(secondOption, true, false),
-      amount: secondOption,
-      change: secondOption - cartTotalAmount,
-    });
+    // If custom amounts set in settings, use those
+    if (settings.quickCashAmounts && settings.quickCashAmounts.length > 0) {
+      const validCustom = settings.quickCashAmounts
+        .filter((amt) => amt > cartTotalAmount)
+        .sort((a, b) => a - b)
+        .slice(0, 4);
+      for (const amt of validCustom) {
+        suggestions.push({
+          label: formatRupiah(amt, true, false),
+          amount: amt,
+          change: amt - cartTotalAmount,
+        });
+      }
+    }
 
-    // 3. Next 100k
-    const next100k = Math.ceil((secondOption + 1000) / 100000) * 100000;
-    const thirdOption = next100k <= secondOption ? secondOption + 50000 : next100k;
-    suggestions.push({
-      label: formatRupiah(thirdOption, true, false),
-      amount: thirdOption,
-      change: thirdOption - cartTotalAmount,
-    });
+    // If no suggestions beyond "Uang Pas" were found, fallback to auto smart suggestions
+    if (suggestions.length === 1) {
+      const next50k = Math.ceil(cartTotalAmount / 50000) * 50000;
+      const secondOption = next50k === cartTotalAmount ? next50k + 50000 : next50k;
+      suggestions.push({
+        label: formatRupiah(secondOption, true, false),
+        amount: secondOption,
+        change: secondOption - cartTotalAmount,
+      });
+
+      const next100k = Math.ceil((secondOption + 1000) / 100000) * 100000;
+      const thirdOption = next100k <= secondOption ? secondOption + 50000 : next100k;
+      suggestions.push({
+        label: formatRupiah(thirdOption, true, false),
+        amount: thirdOption,
+        change: thirdOption - cartTotalAmount,
+      });
+    }
 
     return suggestions;
   };
@@ -241,7 +258,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
                 key={i}
                 type="button"
                 className="quick-cash-btn"
-                onClick={openCheckout}
+                onClick={() => openCheckout(qc.amount)}
               >
                 <span className="qc-label">
                   {i === 0 ? 'Uang Pas' : qc.label}
@@ -256,12 +273,12 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
           </div>
         )}
 
-        {/* Checkout Button */}
+        {/* Checkout Button - Sticky on mobile */}
         <button
           type="button"
-          className="checkout-cta-btn"
+          className="checkout-cta-btn mobile-checkout-sticky"
           disabled={cart.length === 0}
-          onClick={openCheckout}
+          onClick={() => openCheckout()}
         >
           <div style={{ display: 'flex', alignContent: 'center', alignItems: 'center', gap: '8px' }}>
             <Banknote size={20} />
