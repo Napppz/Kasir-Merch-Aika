@@ -66,7 +66,7 @@ export const SettingsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       <div className="page-subheader">
         <div className="subheader-title-group">
           <h2>
@@ -79,7 +79,7 @@ export const SettingsPage: React.FC = () => {
         </div>
       </div>
 
-      <div style={{ flex: 1, padding: '20px', overflowY: 'auto' }}>
+      <div className="page-scroll-content settings-page-content" style={{ padding: '20px' }}>
         <div style={{ maxWidth: '1000px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* SECTION: BOOTH & HARDWARE */}

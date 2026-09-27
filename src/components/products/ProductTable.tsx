@@ -73,212 +73,333 @@ export const ProductTable: React.FC<ProductTableProps> = ({
   }
 
   return (
-    <div
-      style={{
-        background: 'var(--bg-card)',
-        border: '1px solid var(--border-subtle)',
-        borderRadius: 'var(--radius-md)',
-        overflow: 'hidden',
-      }}
-    >
-      <div className="data-table-wrapper">
-        <table className="cosplay-table">
-          <thead>
-            <tr>
-              <th>FOTO & NAMA MERCHANDISE</th>
-              <th>SKU</th>
-              <th>KATEGORI</th>
-              <th>HARGA JUAL</th>
-              <th>HARGA MODAL</th>
-              <th>STOK BOOTH</th>
-              <th>STATUS</th>
-              <th>TERAKHIR DIUBAH</th>
-              <th style={{ textAlign: 'right' }}>AKSI</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => {
-              const stockBadge = getStockBadgeInfo(product);
+    <>
+      {/* Mobile Card List (shown on mobile devices <= 768px) */}
+      <div className="product-mobile-cards-list">
+        {products.map((product) => {
+          const stockBadge = getStockBadgeInfo(product);
 
-              return (
-                <tr
-                  key={product.id}
-                  style={{
-                    opacity: product.isActive ? 1 : 0.65,
-                    transition: 'all var(--transition-fast)',
-                  }}
+          return (
+            <div
+              key={product.id}
+              className="product-admin-mobile-card"
+              style={{
+                opacity: product.isActive ? 1 : 0.65,
+              }}
+            >
+              <div className="pamc-top-row">
+                <div className="pamc-identity">
+                  <div className="pamc-thumb-box">
+                    {product.image ? (
+                      <img src={product.image} alt="" className="pamc-thumb-img" />
+                    ) : (
+                      <span style={{ fontSize: '18px' }}>📦</span>
+                    )}
+                  </div>
+                  <div className="pamc-info">
+                    <div className="pamc-name">{product.name}</div>
+                    <div className="pamc-meta">
+                      <span className="inv-code" style={{ color: 'var(--cyan)' }}>
+                        {product.sku}
+                      </span>
+                      <span className="pamc-dot">•</span>
+                      <span className="pamc-cat">{getCategoryName(product.categoryId)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pamc-badges">
+                  <span className={`stock-tag-badge ${stockBadge.className}`}>
+                    {stockBadge.label}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '9px',
+                      fontWeight: 700,
+                      padding: '1px 6px',
+                      borderRadius: '3px',
+                      background: product.isActive
+                        ? 'rgba(16, 185, 129, 0.15)'
+                        : 'rgba(239, 68, 68, 0.15)',
+                      color: product.isActive ? '#34d399' : '#f87171',
+                    }}
+                  >
+                    {product.isActive ? 'Active' : 'Inactive'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="pamc-metrics-grid">
+                <div className="pamc-metric-item">
+                  <span className="pamc-metric-label">HARGA JUAL</span>
+                  <strong className="pamc-metric-val price">
+                    {formatRupiah(product.price, true, false)}
+                  </strong>
+                </div>
+
+                <div className="pamc-metric-item">
+                  <span className="pamc-metric-label">MODAL</span>
+                  <span className="pamc-metric-val cost">
+                    {formatRupiah(product.costPrice, true, false)}
+                  </span>
+                </div>
+
+                <div className="pamc-metric-item">
+                  <span className="pamc-metric-label">STOK BOOTH</span>
+                  <strong className="pamc-metric-val stock">
+                    {product.stock} <span style={{ fontSize: '10px', color: 'var(--text-dim)', fontWeight: 'normal' }}>pcs</span>
+                  </strong>
+                </div>
+              </div>
+
+              <div className="pamc-actions-row">
+                <button
+                  type="button"
+                  className="table-detail-btn pamc-btn"
+                  onClick={() => onViewDetail(product)}
                 >
-                  {/* Photo & Name */}
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <div
-                        style={{
-                          width: '36px',
-                          height: '36px',
-                          borderRadius: '6px',
-                          overflow: 'hidden',
-                          background: '#080d16',
-                          flexShrink: 0,
-                        }}
-                      >
-                        {product.image && (
-                          <img
-                            src={product.image}
-                            alt=""
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          />
-                        )}
-                      </div>
-                      <div style={{ minWidth: 0 }}>
+                  <Eye size={13} />
+                  <span>Detail</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="table-detail-btn pamc-btn"
+                  onClick={() => onEdit(product)}
+                >
+                  <Edit3 size={13} />
+                  <span>Edit</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="table-detail-btn pamc-btn"
+                  style={{
+                    color: product.isActive ? '#f87171' : '#34d399',
+                    borderColor: product.isActive
+                      ? 'rgba(239, 68, 68, 0.3)'
+                      : 'rgba(16, 185, 129, 0.3)',
+                  }}
+                  onClick={() => onToggleStatus(product)}
+                >
+                  <Power size={13} />
+                  <span>{product.isActive ? 'Nonaktifkan' : 'Aktifkan'}</span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Desktop Table (shown on tablets/desktop > 768px) */}
+      <div
+        className="product-desktop-table-container"
+        style={{
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-subtle)',
+          borderRadius: 'var(--radius-md)',
+          overflow: 'hidden',
+        }}
+      >
+        <div className="data-table-wrapper">
+          <table className="cosplay-table">
+            <thead>
+              <tr>
+                <th>FOTO & NAMA MERCHANDISE</th>
+                <th>SKU</th>
+                <th>KATEGORI</th>
+                <th>HARGA JUAL</th>
+                <th>HARGA MODAL</th>
+                <th>STOK BOOTH</th>
+                <th>STATUS</th>
+                <th>TERAKHIR DIUBAH</th>
+                <th style={{ textAlign: 'right' }}>AKSI</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((product) => {
+                const stockBadge = getStockBadgeInfo(product);
+
+                return (
+                  <tr
+                    key={product.id}
+                    style={{
+                      opacity: product.isActive ? 1 : 0.65,
+                      transition: 'all var(--transition-fast)',
+                    }}
+                  >
+                    {/* Photo & Name */}
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div
                           style={{
-                            fontWeight: 700,
-                            color: product.isActive ? 'var(--text-main)' : 'var(--text-muted)',
-                            whiteSpace: 'nowrap',
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '6px',
                             overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            maxWidth: '220px',
+                            background: '#080d16',
+                            flexShrink: 0,
                           }}
-                          title={product.name}
                         >
-                          {product.name}
+                          {product.image && (
+                            <img
+                              src={product.image}
+                              alt=""
+                              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                            />
+                          )}
                         </div>
-                        {product.description && (
+                        <div style={{ minWidth: 0 }}>
                           <div
                             style={{
-                              fontSize: '10px',
-                              color: 'var(--text-dim)',
+                              fontWeight: 700,
+                              color: product.isActive ? 'var(--text-main)' : 'var(--text-muted)',
                               whiteSpace: 'nowrap',
                               overflow: 'hidden',
                               textOverflow: 'ellipsis',
                               maxWidth: '220px',
                             }}
+                            title={product.name}
                           >
-                            {product.description}
+                            {product.name}
                           </div>
-                        )}
+                          {product.description && (
+                            <div
+                              style={{
+                                fontSize: '10px',
+                                color: 'var(--text-dim)',
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                maxWidth: '220px',
+                              }}
+                            >
+                              {product.description}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* SKU */}
-                  <td>
-                    <span className="inv-code" style={{ color: 'var(--cyan)' }}>
-                      {product.sku}
-                    </span>
-                  </td>
-
-                  {/* Category */}
-                  <td>
-                    <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-                      {getCategoryName(product.categoryId)}
-                    </span>
-                  </td>
-
-                  {/* Price */}
-                  <td>
-                    <strong style={{ color: '#ffffff' }}>
-                      {formatRupiah(product.price, true, false)}
-                    </strong>
-                  </td>
-
-                  {/* Cost Price */}
-                  <td>
-                    <span style={{ color: 'var(--text-dim)' }}>
-                      {formatRupiah(product.costPrice, true, false)}
-                    </span>
-                  </td>
-
-                  {/* Stock & Stock Status Badge */}
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <strong style={{ color: '#ffffff' }}>{product.stock}</strong>
-                      <span
-                        className={`stock-tag-badge ${stockBadge.className}`}
-                        style={{ position: 'static', padding: '1px 6px', fontSize: '9px' }}
-                      >
-                        {stockBadge.label}
+                    {/* SKU */}
+                    <td>
+                      <span className="inv-code" style={{ color: 'var(--cyan)' }}>
+                        {product.sku}
                       </span>
-                    </div>
-                    <div style={{ fontSize: '9px', color: 'var(--text-dim)', marginTop: '2px' }}>
-                      Min: {product.minimumStock}
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Product Status */}
-                  <td>
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        fontWeight: 700,
-                        padding: '2px 8px',
-                        borderRadius: '4px',
-                        background: product.isActive
-                          ? 'rgba(16, 185, 129, 0.15)'
-                          : 'rgba(239, 68, 68, 0.15)',
-                        color: product.isActive ? '#34d399' : '#f87171',
-                      }}
-                    >
-                      {product.isActive ? 'Active' : 'Inactive'}
-                    </span>
-                  </td>
+                    {/* Category */}
+                    <td>
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                        {getCategoryName(product.categoryId)}
+                      </span>
+                    </td>
 
-                  {/* Updated At */}
-                  <td>
-                    <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
-                      {formatDateTime(product.updatedAt).split(',')[0]}
-                    </span>
-                  </td>
+                    {/* Price */}
+                    <td>
+                      <strong style={{ color: '#ffffff' }}>
+                        {formatRupiah(product.price, true, false)}
+                      </strong>
+                    </td>
 
-                  {/* Actions */}
-                  <td style={{ textAlign: 'right' }}>
-                    <div style={{ display: 'inline-flex', gap: '5px' }}>
-                      {/* View Detail */}
-                      <button
-                        type="button"
-                        className="table-detail-btn"
-                        onClick={() => onViewDetail(product)}
-                        title="Lihat Detail Produk"
-                      >
-                        <Eye size={12} />
-                        <span>Detail</span>
-                      </button>
+                    {/* Cost Price */}
+                    <td>
+                      <span style={{ color: 'var(--text-dim)' }}>
+                        {formatRupiah(product.costPrice, true, false)}
+                      </span>
+                    </td>
 
-                      {/* Edit */}
-                      <button
-                        type="button"
-                        className="table-detail-btn"
-                        onClick={() => onEdit(product)}
-                        title="Edit Produk"
-                      >
-                        <Edit3 size={12} />
-                        <span>Edit</span>
-                      </button>
+                    {/* Stock & Stock Status Badge */}
+                    <td>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <strong style={{ color: '#ffffff' }}>{product.stock}</strong>
+                        <span
+                          className={`stock-tag-badge ${stockBadge.className}`}
+                          style={{ position: 'static', padding: '1px 6px', fontSize: '9px' }}
+                        >
+                          {stockBadge.label}
+                        </span>
+                      </div>
+                      <div style={{ fontSize: '9px', color: 'var(--text-dim)', marginTop: '2px' }}>
+                        Min: {product.minimumStock}
+                      </div>
+                    </td>
 
-                      {/* Activate / Deactivate */}
-                      <button
-                        type="button"
-                        className="table-detail-btn"
+                    {/* Product Status */}
+                    <td>
+                      <span
                         style={{
-                          color: product.isActive ? '#f87171' : '#34d399',
-                          borderColor: product.isActive
-                            ? 'rgba(239, 68, 68, 0.3)'
-                            : 'rgba(16, 185, 129, 0.3)',
+                          fontSize: '10px',
+                          fontWeight: 700,
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: product.isActive
+                            ? 'rgba(16, 185, 129, 0.15)'
+                            : 'rgba(239, 68, 68, 0.15)',
+                          color: product.isActive ? '#34d399' : '#f87171',
                         }}
-                        onClick={() => onToggleStatus(product)}
-                        title={product.isActive ? 'Nonaktifkan Produk' : 'Aktifkan Produk'}
                       >
-                        <Power size={12} />
-                        <span>{product.isActive ? 'Nonaktifkan' : 'Aktifkan'}</span>
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                        {product.isActive ? 'Active' : 'Inactive'}
+                      </span>
+                    </td>
+
+                    {/* Updated At */}
+                    <td>
+                      <span style={{ fontSize: '11px', color: 'var(--text-dim)' }}>
+                        {formatDateTime(product.updatedAt).split(',')[0]}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+                    <td style={{ textAlign: 'right' }}>
+                      <div style={{ display: 'inline-flex', gap: '5px' }}>
+                        {/* View Detail */}
+                        <button
+                          type="button"
+                          className="table-detail-btn"
+                          onClick={() => onViewDetail(product)}
+                          title="Lihat Detail Produk"
+                        >
+                          <Eye size={12} />
+                          <span>Detail</span>
+                        </button>
+
+                        {/* Edit */}
+                        <button
+                          type="button"
+                          className="table-detail-btn"
+                          onClick={() => onEdit(product)}
+                          title="Edit Produk"
+                        >
+                          <Edit3 size={12} />
+                          <span>Edit</span>
+                        </button>
+
+                        {/* Activate / Deactivate */}
+                        <button
+                          type="button"
+                          className="table-detail-btn"
+                          style={{
+                            color: product.isActive ? '#f87171' : '#34d399',
+                            borderColor: product.isActive
+                              ? 'rgba(239, 68, 68, 0.3)'
+                              : 'rgba(16, 185, 129, 0.3)',
+                          }}
+                          onClick={() => onToggleStatus(product)}
+                          title={product.isActive ? 'Nonaktifkan Produk' : 'Aktifkan Produk'}
+                        >
+                          <Power size={12} />
+                          <span>{product.isActive ? 'Nonaktifkan' : 'Aktifkan'}</span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

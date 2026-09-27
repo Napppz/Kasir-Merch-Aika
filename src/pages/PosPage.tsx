@@ -20,7 +20,7 @@ export const PosPage: React.FC<PosPageProps> = ({
   const { settings, cartTotalQty, cartTotalAmount, openCheckout, openBoothModal } = usePos();
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className={`page-subheader ${mobileTab === 'cart' ? 'hide-on-mobile-cart' : ''}`}>
         <div className="subheader-title-group">

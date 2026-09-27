@@ -40,7 +40,7 @@ export const DashboardPage: React.FC = () => {
   }, [products]);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className="page-subheader">
         <div className="subheader-title-group">

@@ -174,7 +174,7 @@ export const ReportsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className="page-subheader">
         <div className="subheader-title-group">
@@ -235,7 +235,7 @@ export const ReportsPage: React.FC = () => {
       </div>
 
       {/* Main Reporting Container */}
-      <div style={{ flex: 1, padding: '16px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div className="page-scroll-content reports-page-content" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {/* Date Range Selector Bar (BAGIAN 4 & 18) */}
         <div
           style={{

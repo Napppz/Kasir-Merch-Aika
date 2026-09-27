@@ -1224,7 +1224,13 @@
 
 .dashboard-view-container {
   flex: 1;
+  min-height: 0;
+  min-width: 0;
   overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+  overscroll-behavior-y: contain;
   padding: 16px 20px 24px;
   display: flex;
   flex-direction: column;
@@ -1593,6 +1599,9 @@
 
 .data-table-wrapper {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  overscroll-behavior: contain;
 }
 
 .cosplay-table {
@@ -1619,6 +1628,170 @@
 
 .cosplay-table tr:hover td {
   background: rgba(255, 255, 255, 0.02);
+}
+
+/* ==========================================================================
+   PRODUCT ADMIN MOBILE CARD VIEW (<= 768px)
+   ========================================================================== */
+.product-mobile-cards-list {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.product-admin-mobile-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all var(--transition-fast);
+}
+
+.pamc-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.pamc-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.pamc-thumb-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #080d16;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pamc-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pamc-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.pamc-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+.pamc-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.pamc-dot {
+  color: var(--text-dim);
+}
+
+.pamc-cat {
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pamc-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.pamc-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius-sm);
+  padding: 8px 10px;
+}
+
+.pamc-metric-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.pamc-metric-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-dim);
+  letter-spacing: 0.4px;
+}
+
+.pamc-metric-val {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.pamc-metric-val.price {
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.pamc-metric-val.stock {
+  color: var(--cyan);
+}
+
+.pamc-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.pamc-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 8px 6px !important;
+  font-size: 11.5px !important;
+  min-height: 36px;
+}
+
+@media (max-width: 768px) {
+  .product-desktop-table-container {
+    display: none !important;
+  }
+
+  .product-mobile-cards-list {
+    display: flex !important;
+  }
 }
 
 .inv-code {
@@ -2686,6 +2859,28 @@
 
   .cosplay-table {
     min-width: 600px !important;
+  }
+
+  /* ==========================================================================
+     ADMIN PAGES SCROLL & TOUCH OPTIMIZATIONS (PORTRAIT + LANDSCAPE)
+     ========================================================================== */
+  .products-page-content,
+  .inventory-page-content,
+  .transactions-page-content,
+  .reports-page-content,
+  .settings-page-content {
+    padding: 10px 12px 30px !important;
+    gap: 10px !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    touch-action: pan-y !important;
+    overscroll-behavior-y: contain !important;
+  }
+
+  .product-filter-bar-card {
+    padding: 10px 12px !important;
+    gap: 8px !important;
   }
 }
 

@@ -148,7 +148,7 @@ export const InventoryPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className="page-subheader">
         <div className="subheader-title-group">
@@ -230,7 +230,7 @@ export const InventoryPage: React.FC = () => {
       </div>
 
       {/* Main Dashboard Body */}
-      <div style={{ flex: 1, padding: '16px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div className="page-scroll-content inventory-page-content" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
         {/* Top 7 KPI Cards (BAGIAN 3) */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '10px' }}>
           {/* 1. Total Jenis Produk */}

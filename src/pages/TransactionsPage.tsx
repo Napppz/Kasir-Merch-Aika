@@ -120,7 +120,7 @@ export const TransactionsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className="page-subheader">
         <div className="subheader-title-group">
@@ -160,7 +160,7 @@ export const TransactionsPage: React.FC = () => {
       </div>
 
       {/* Main Content Area */}
-      <div style={{ flex: 1, padding: '16px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div className="page-scroll-content transactions-page-content" style={{ padding: '16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {/* Date Presets Bar (BAGIAN 4) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-dim)', fontWeight: 700 }}>

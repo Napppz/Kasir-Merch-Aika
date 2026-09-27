@@ -268,7 +268,7 @@ export const ProductsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
+    <div className="page-container">
       {/* Subheader */}
       <div className="page-subheader">
         <div className="subheader-title-group">
@@ -426,7 +426,7 @@ export const ProductsPage: React.FC = () => {
       </div>
 
       {/* Main Tab Content */}
-      <div style={{ flex: 1, padding: '16px 20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+      <div className="page-scroll-content products-page-content" style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {activeTab === 'products' ? (
           <>
             <ProductFilterBar

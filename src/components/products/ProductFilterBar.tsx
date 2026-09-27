@@ -36,6 +36,7 @@ export const ProductFilterBar: React.FC<ProductFilterBarProps> = ({
 
   return (
     <div
+      className="product-filter-bar-card"
       style={{
         display: 'flex',
         flexDirection: 'column',
