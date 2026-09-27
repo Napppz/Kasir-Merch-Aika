@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "mobile-mcp": {
+      "command": "cmd.exe",
+      "args": [
+        "/c",
+        "npx",
+        "-y",
+        "@mobilenext/mobile-mcp@latest"
+      ],
+      "env": {
+        "ANDROID_HOME": "C:\\Users\\PC\\AppData\\Local\\Android\\Sdk",
+        "PATH": "C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\emulator;%PATH%"
+      }
+    }
+  }
+}
