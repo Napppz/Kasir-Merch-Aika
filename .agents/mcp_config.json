@@ -1,16 +1,14 @@
 {
   "mcpServers": {
     "mobile-mcp": {
-      "command": "cmd.exe",
+      "command": "C:\\Program Files\\nodejs\\node.exe",
       "args": [
-        "/c",
-        "npx",
-        "-y",
-        "@mobilenext/mobile-mcp@latest"
+        "C:\\Users\\PC\\AppData\\Roaming\\npm\\node_modules\\@mobilenext\\mobile-mcp\\lib\\index.js",
+        "--stdio"
       ],
       "env": {
         "ANDROID_HOME": "C:\\Users\\PC\\AppData\\Local\\Android\\Sdk",
-        "PATH": "C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\emulator;%PATH%"
+        "PATH": "C:\\Program Files\\nodejs;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\platform-tools;C:\\Users\\PC\\AppData\\Local\\Android\\Sdk\\emulator;C:\\Users\\PC\\AppData\\Roaming\\npm"
       }
     }
   }
