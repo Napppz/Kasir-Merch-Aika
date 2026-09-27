@@ -22,19 +22,10 @@ export const MetricCard: React.FC<MetricCardProps> = ({
   return (
     <div className={`metric-card ${isWarning ? 'warning-border' : ''}`}>
       <div className="metric-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <div className="metric-title-group">
           <span className="metric-title">{title}</span>
           {badge && (
-            <span
-              style={{
-                fontSize: '9px',
-                fontWeight: 800,
-                background: '#f43f5e',
-                color: 'white',
-                padding: '1px 5px',
-                borderRadius: '3px',
-              }}
-            >
+            <span className="metric-badge-status">
               {badge}
             </span>
           )}

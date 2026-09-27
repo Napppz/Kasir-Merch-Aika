@@ -1111,6 +1111,90 @@
 /* ==========================================================================
    DASHBOARD VIEW (SCREENSHOT 4)
    ========================================================================== */
+.dashboard-subheader-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.dashboard-period-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+
+.period-tab-btn {
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition-fast);
+}
+
+.period-tab-btn.active {
+  background: #6366f1;
+  color: #ffffff;
+}
+
+.dashboard-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dashboard-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dashboard-action-btn.primary {
+  background: #6366f1;
+  color: white;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 2px 10px var(--primary-glow);
+}
+
+.metric-title-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.metric-badge-status {
+  font-size: 9px;
+  font-weight: 800;
+  background: #f43f5e;
+  color: white;
+  padding: 1px 5px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.inv-code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
 .dashboard-view-container {
   flex: 1;
   overflow-y: auto;
@@ -2373,6 +2457,209 @@
     min-height: 46px !important;
     font-size: 13px !important;
   }
+
+  /* ==========================================================================
+     DASHBOARD RESPONSIVE MOBILE STYLES (PORTRAIT + LANDSCAPE BASE)
+     ========================================================================== */
+  .dashboard-view-container {
+    padding: 10px 12px 24px !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-subheader-controls {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .dashboard-period-tabs {
+    display: flex !important;
+    width: 100% !important;
+  }
+
+  .period-tab-btn {
+    flex: 1 !important;
+    text-align: center !important;
+    padding: 6px 4px !important;
+    font-size: 11px !important;
+  }
+
+  .dashboard-quick-actions {
+    display: flex !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .dashboard-action-btn {
+    flex: 1 !important;
+    justify-content: center !important;
+    padding: 6px 8px !important;
+    font-size: 11px !important;
+  }
+
+  .dashboard-action-btn span {
+    white-space: nowrap !important;
+  }
+
+  /* Metric cards: 2x2 grid on mobile portrait */
+  .metrics-grid-4 {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  .metric-card {
+    padding: 10px 12px !important;
+    gap: 6px !important;
+  }
+
+  .metric-title {
+    font-size: 9px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .metric-badge-status {
+    font-size: 8.5px !important;
+    padding: 1px 4px !important;
+  }
+
+  .metric-val {
+    font-size: 16px !important;
+    word-break: break-word !important;
+  }
+
+  .metric-icon-box {
+    width: 26px !important;
+    height: 26px !important;
+    min-width: 26px !important;
+  }
+
+  .metric-icon-box svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .metric-footer {
+    font-size: 10px !important;
+  }
+
+  .metric-footer span {
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* Middle grid: Single column stack on mobile portrait */
+  .dashboard-middle-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .dashboard-card {
+    padding: 12px !important;
+    gap: 10px !important;
+  }
+
+  .hourly-chart-container {
+    height: 135px !important;
+    padding: 12px 6px 0 !important;
+    gap: 4px !important;
+  }
+
+  .bar-amount-label {
+    font-size: 9px !important;
+  }
+
+  .bar-time-label {
+    font-size: 10px !important;
+  }
+
+  .bar-tag-label {
+    font-size: 9px !important;
+  }
+
+  .payment-dist-legend {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .dli-title {
+    font-size: 10px !important;
+  }
+
+  .dli-amount {
+    font-size: 11.5px !important;
+  }
+
+  .dli-txcount {
+    font-size: 9px !important;
+  }
+
+  .top-merch-item {
+    padding: 6px 8px !important;
+  }
+
+  .tmi-left {
+    min-width: 0 !important;
+    gap: 6px !important;
+  }
+
+  .tmi-name {
+    font-size: 11px !important;
+    max-width: 125px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .tmi-sales-count {
+    font-size: 10px !important;
+  }
+
+  .tmi-omzet {
+    font-size: 11px !important;
+  }
+
+  .critical-stock-item {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  .cs-title-row {
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+  }
+
+  .cs-name {
+    font-size: 11px !important;
+    max-width: 130px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .cs-action-btn {
+    flex-shrink: 0 !important;
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+  }
+
+  .recent-transactions-card {
+    padding: 12px !important;
+  }
+
+  .data-table-wrapper {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+  }
+
+  .cosplay-table {
+    min-width: 600px !important;
+  }
 }
 
 /* ==========================================================================
@@ -2487,6 +2774,61 @@
   .modal-confirm-pay-btn {
     min-height: 38px !important;
     font-size: 12px !important;
+  }
+
+  /* Dashboard Landscape Optimizations */
+  .dashboard-view-container {
+    padding: 6px 12px 16px !important;
+    gap: 8px !important;
+  }
+
+  .metrics-grid-4 {
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 6px !important;
+  }
+
+  .metric-card {
+    padding: 6px 8px !important;
+    gap: 3px !important;
+  }
+
+  .metric-val {
+    font-size: 14px !important;
+  }
+
+  .metric-title {
+    font-size: 8.5px !important;
+  }
+
+  .metric-icon-box {
+    width: 20px !important;
+    height: 20px !important;
+    min-width: 20px !important;
+  }
+
+  .metric-icon-box svg {
+    width: 11px !important;
+    height: 11px !important;
+  }
+
+  .dashboard-middle-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+
+  .dashboard-card {
+    padding: 8px 10px !important;
+    gap: 6px !important;
+  }
+
+  .hourly-chart-container {
+    height: 105px !important;
+    padding: 8px 4px 0 !important;
+    gap: 4px !important;
+  }
+
+  .recent-transactions-card {
+    padding: 8px 10px !important;
   }
 }
 

@@ -54,58 +54,26 @@ export const DashboardPage: React.FC = () => {
         </div>
 
         {/* Filter Pills & Quick Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="dashboard-subheader-controls">
           {/* Period Tabs */}
-          <div
-            style={{
-              display: 'flex',
-              background: 'rgba(255, 255, 255, 0.04)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: 'var(--radius-sm)',
-              padding: '2px',
-            }}
-          >
+          <div className="dashboard-period-tabs">
             <button
               type="button"
-              style={{
-                padding: '4px 10px',
-                fontSize: '11px',
-                fontWeight: 600,
-                borderRadius: '4px',
-                background: activePeriod === 'today' ? '#6366f1' : 'transparent',
-                color: activePeriod === 'today' ? '#ffffff' : 'var(--text-muted)',
-                cursor: 'pointer',
-              }}
+              className={`period-tab-btn ${activePeriod === 'today' ? 'active' : ''}`}
               onClick={() => setActivePeriod('today')}
             >
               Hari Ini
             </button>
             <button
               type="button"
-              style={{
-                padding: '4px 10px',
-                fontSize: '11px',
-                fontWeight: 600,
-                borderRadius: '4px',
-                background: activePeriod === 'yesterday' ? '#6366f1' : 'transparent',
-                color: activePeriod === 'yesterday' ? '#ffffff' : 'var(--text-muted)',
-                cursor: 'pointer',
-              }}
+              className={`period-tab-btn ${activePeriod === 'yesterday' ? 'active' : ''}`}
               onClick={() => setActivePeriod('yesterday')}
             >
               Kemarin
             </button>
             <button
               type="button"
-              style={{
-                padding: '4px 10px',
-                fontSize: '11px',
-                fontWeight: 600,
-                borderRadius: '4px',
-                background: activePeriod === 'total' ? '#6366f1' : 'transparent',
-                color: activePeriod === 'total' ? '#ffffff' : 'var(--text-muted)',
-                cursor: 'pointer',
-              }}
+              className={`period-tab-btn ${activePeriod === 'total' ? 'active' : ''}`}
               onClick={() => setActivePeriod('total')}
             >
               Semua Periode
@@ -113,68 +81,34 @@ export const DashboardPage: React.FC = () => {
           </div>
 
           {/* Quick Action Buttons */}
-          <button
-            type="button"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: '#6366f1',
-              color: 'white',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '12px',
-              fontWeight: 700,
-              boxShadow: '0 2px 10px var(--primary-glow)',
-              cursor: 'pointer',
-            }}
-            onClick={() => setCurrentPage('pos')}
-          >
-            <Plus size={14} />
-            <span>Transaksi Baru (F1)</span>
-          </button>
+          <div className="dashboard-quick-actions">
+            <button
+              type="button"
+              className="dashboard-action-btn primary"
+              onClick={() => setCurrentPage('pos')}
+            >
+              <Plus size={14} />
+              <span>Transaksi Baru</span>
+            </button>
 
-          <button
-            type="button"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
-              color: 'var(--text-secondary)',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-            onClick={() => setCurrentPage('products')}
-          >
-            <Package size={14} />
-            <span>Produk</span>
-          </button>
+            <button
+              type="button"
+              className="dashboard-action-btn"
+              onClick={() => setCurrentPage('products')}
+            >
+              <Package size={14} />
+              <span>Produk</span>
+            </button>
 
-          <button
-            type="button"
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
-              color: 'var(--text-secondary)',
-              padding: '6px 12px',
-              borderRadius: 'var(--radius-sm)',
-              fontSize: '12px',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
-            onClick={() => setCurrentPage('inventory')}
-          >
-            <Boxes size={14} />
-            <span>Inventaris</span>
-          </button>
+            <button
+              type="button"
+              className="dashboard-action-btn"
+              onClick={() => setCurrentPage('inventory')}
+            >
+              <Boxes size={14} />
+              <span>Inventaris</span>
+            </button>
+          </div>
         </div>
       </div>
 
