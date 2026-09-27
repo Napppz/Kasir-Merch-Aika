@@ -186,7 +186,7 @@ export const INITIAL_PRODUCTS: Product[] = [
   {
     id: 'prod-011',
     sku: 'BND-001',
-    name: 'Exclusive ComicFest Bundle',
+    name: 'Exclusive Event Bundle',
     description: 'Stand + Pin + Sticker Pack',
     categoryId: 'cat-plushie',
     price: 110000,
@@ -202,11 +202,11 @@ export const INITIAL_PRODUCTS: Product[] = [
 
 export const INITIAL_BOOTH_SETTINGS: BoothSettings = {
   boothName: 'AIKA SESILIA OFFICIAL BOOTH',
-  eventName: 'Comic Fest 2026',
-  hallLocation: 'Booth A-12 • Jakarta International Expo Kemayoran',
+  eventName: '',
+  hallLocation: 'Booth AH-20',
   cashierName: 'Aika',
   cashierId: 'Kasir 01',
-  terminalId: 'POS-CF26-8819',
+  terminalId: 'POS-01',
   socialHandle: '@aikasesilia',
   receiptNote: 'Terima kasih telah berbelanja di booth Aika Sesilia!',
   printerName: 'Thermal Printer EPSON TM-T82X Ready (USB001)',
@@ -712,7 +712,7 @@ export const INITIAL_PURCHASE_ORDERS: PurchaseOrder[] = [
     subtotal: 1135000,
     discount: 0,
     total: 1135000,
-    notes: 'Pengiriman batch pertama persiapan ComicFest',
+    notes: 'Pengiriman batch pertama persiapan Event',
     createdAt: '2026-09-25T09:00:00Z',
     updatedAt: '2026-09-26T14:30:00Z',
   },

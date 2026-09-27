@@ -1,5 +1,5 @@
 import React from 'react';
-import { Clock, WifiOff, Menu } from 'lucide-react';
+import { Clock, WifiOff, Menu, Pencil } from 'lucide-react';
 import { usePos } from '../../context/PosContext';
 
 interface TopBarProps {
@@ -7,7 +7,7 @@ interface TopBarProps {
 }
 
 export const TopBar: React.FC<TopBarProps> = ({ onToggleMobileSidebar }) => {
-  const { currentTimeString, settings } = usePos();
+  const { currentTimeString, settings, openBoothModal } = usePos();
 
   return (
     <header className="topbar">
@@ -27,10 +27,16 @@ export const TopBar: React.FC<TopBarProps> = ({ onToggleMobileSidebar }) => {
           <span className="pill-text-desktop" style={{ fontWeight: 700 }}>Offline Siap • Data Tersimpan Aman</span>
           <span className="pill-text-mobile" style={{ fontWeight: 700 }}>Offline Siap</span>
         </div>
-        <div className="event-pill">
+        <button
+          type="button"
+          className={`event-pill event-pill--clickable ${!settings.eventName ? 'event-pill--empty' : ''}`}
+          onClick={openBoothModal}
+          title={settings.eventName ? `Event: ${settings.eventName} (Klik untuk ubah)` : 'Klik untuk menentukan nama event baru'}
+        >
           <span>🎪</span>
-          <span>{settings.eventName}</span>
-        </div>
+          <span>{settings.eventName || '+ Tentukan Event'}</span>
+          <Pencil size={10} className="event-pill-icon" />
+        </button>
       </div>
 
       <div className="topbar-right">

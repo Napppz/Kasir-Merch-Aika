@@ -9,6 +9,8 @@ interface UseCapacitorOptions {
   closeCheckout: () => void;
   selectedReceiptTx: any;
   closeReceiptModal: () => void;
+  isBoothModalOpen?: boolean;
+  closeBoothModal?: () => void;
   isMobileSidebarOpen: boolean;
   setIsMobileSidebarOpen: (open: boolean) => void;
   currentPage: string;
@@ -22,6 +24,8 @@ export function useCapacitorNative({
   closeCheckout,
   selectedReceiptTx,
   closeReceiptModal,
+  isBoothModalOpen,
+  closeBoothModal,
   isMobileSidebarOpen,
   setIsMobileSidebarOpen,
   currentPage,
@@ -47,7 +51,13 @@ export function useCapacitorNative({
         return;
       }
 
-      // Priority 2: Checkout Modal (closes safely without submitting or clearing cart)
+      // Priority 2: Booth Modal
+      if (isBoothModalOpen && closeBoothModal) {
+        closeBoothModal();
+        return;
+      }
+
+      // Priority 3: Checkout Modal (closes safely without submitting or clearing cart)
       if (isCheckoutOpen) {
         closeCheckout();
         return;

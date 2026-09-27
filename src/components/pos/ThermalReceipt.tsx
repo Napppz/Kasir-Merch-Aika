@@ -46,8 +46,8 @@ export const ThermalReceipt: React.FC<ThermalReceiptProps> = ({
         {/* Store Title */}
         <div className="receipt-header">
           <div className="receipt-store-title">{settings.boothName}</div>
-          <div className="receipt-store-sub">Booth A-12 {settings.eventName}</div>
-          <div className="receipt-store-sub">Jakarta International Expo Kemayoran</div>
+          {settings.eventName && <div className="receipt-store-sub">{settings.eventName}</div>}
+          {settings.hallLocation && <div className="receipt-store-sub">{settings.hallLocation}</div>}
         </div>
 
         <hr className="receipt-divider" />

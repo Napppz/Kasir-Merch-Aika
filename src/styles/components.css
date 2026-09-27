@@ -36,6 +36,33 @@
   letter-spacing: 0.5px;
 }
 
+.event-tag-badge--clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.event-tag-badge--clickable:hover {
+  background: rgba(236, 72, 153, 0.25);
+  border-color: var(--pink);
+  transform: translateY(-1px);
+  box-shadow: 0 0 10px rgba(236, 72, 153, 0.3);
+}
+
+.event-tag-badge--empty {
+  cursor: pointer;
+  background: rgba(236, 72, 153, 0.08);
+  border: 1px dashed var(--border-pink);
+  color: var(--pink);
+  transition: all 0.2s ease;
+}
+
+.event-tag-badge--empty:hover {
+  background: rgba(236, 72, 153, 0.22);
+  border-style: solid;
+  transform: translateY(-1px);
+}
+
 .subheader-right-info {
   display: flex;
   align-items: center;

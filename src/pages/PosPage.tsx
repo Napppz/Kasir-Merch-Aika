@@ -13,11 +13,11 @@ interface PosPageProps {
   onTabChange?: (tab: 'catalog' | 'cart') => void;
 }
 
-export const PosPage: React.FC<PosPageProps> = ({ 
-  mobileTab = 'catalog', 
-  onTabChange 
+export const PosPage: React.FC<PosPageProps> = ({
+  mobileTab = 'catalog',
+  onTabChange
 }) => {
-  const { settings, cartTotalQty, cartTotalAmount, openCheckout } = usePos();
+  const { settings, cartTotalQty, cartTotalAmount, openCheckout, openBoothModal } = usePos();
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}>
@@ -26,8 +26,26 @@ export const PosPage: React.FC<PosPageProps> = ({
         <div className="subheader-title-group">
           <h2>
             <ShoppingBag size={20} color="var(--primary-light)" />
-            <span>Kasir POS Booth</span>
-            <span className="event-tag-badge">{settings.eventName || 'COMIC FEST 2026'}</span>
+            <span>Kasir Merch Aika</span>
+            {settings.eventName ? (
+              <button
+                type="button"
+                className="event-tag-badge event-tag-badge--clickable"
+                onClick={openBoothModal}
+                title={`Event: ${settings.eventName} (Klik untuk ubah)`}
+              >
+                {settings.eventName}
+              </button>
+            ) : (
+              <button
+                type="button"
+                className="event-tag-badge event-tag-badge--empty"
+                onClick={openBoothModal}
+                title="Klik untuk menentukan event baru"
+              >
+                + Tentukan Event
+              </button>
+            )}
           </h2>
           <div className="subheader-subtitle">
             Pilih merchandise, masukkan ke keranjang, dan proses pembayaran cepat
@@ -86,8 +104,8 @@ export const PosPage: React.FC<PosPageProps> = ({
                 <span className="mobile-cart-total">{formatRupiah(cartTotalAmount)}</span>
               </div>
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="mobile-view-cart-btn"
                   onClick={() => onTabChange?.('cart')}
                   title="Lihat Rincian Keranjang"
@@ -95,8 +113,8 @@ export const PosPage: React.FC<PosPageProps> = ({
                   <ShoppingCart size={14} />
                   <span>Rincian</span>
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="mobile-direct-pay-btn"
                   onClick={() => openCheckout()}
                   title="Bayar Sekarang"

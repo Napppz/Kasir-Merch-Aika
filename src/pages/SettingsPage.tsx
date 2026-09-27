@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Settings, Printer, Store, User, ShieldCheck, QrCode, CheckCircle2 } from 'lucide-react';
+import { Settings, Printer, Store, User, ShieldCheck, QrCode, CheckCircle2, Edit3 } from 'lucide-react';
 import { usePos } from '../context/PosContext';
 import { backupService } from '../services/backupService';
 import type { LastBackupInfo } from '../types';
@@ -11,7 +11,7 @@ import { DangerZone } from '../components/settings/DangerZone';
 import { QuickCashConfigCard } from '../components/settings/QuickCashConfigCard';
 
 export const SettingsPage: React.FC = () => {
-  const { settings, refreshAllData, addToast } = usePos();
+  const { settings, refreshAllData, addToast, openBoothModal } = usePos();
 
   // Database stats state
   const [dbStats, setDbStats] = useState<{
@@ -98,22 +98,54 @@ export const SettingsPage: React.FC = () => {
                   padding: '16px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <Store size={16} color="var(--primary-light)" />
-                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff', margin: 0 }}>Informasi Booth & Event</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Store size={16} color="var(--primary-light)" />
+                    <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff', margin: 0 }}>Informasi Booth & Event</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openBoothModal}
+                    style={{
+                      background: 'rgba(236, 72, 153, 0.15)',
+                      border: '1px solid rgba(236, 72, 153, 0.4)',
+                      color: 'var(--pink)',
+                      borderRadius: '6px',
+                      padding: '4px 10px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      transition: 'all 0.2s',
+                    }}
+                  >
+                    <Edit3 size={12} />
+                    <span>Ubah Event / Booth</span>
+                  </button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
                   <div>
-                    <span style={{ color: 'var(--text-dim)' }}>Nama Toko:</span>
-                    <div style={{ fontWeight: 700, color: '#ffffff' }}>{settings.boothName}</div>
+                    <span style={{ color: 'var(--text-dim)' }}>Nama Toko / Booth:</span>
+                    <div style={{ fontWeight: 700, color: '#ffffff' }}>{settings.boothName || '-'}</div>
                   </div>
                   <div>
-                    <span style={{ color: 'var(--text-dim)' }}>Event:</span>
-                    <div style={{ fontWeight: 700, color: '#ffffff' }}>{settings.eventName}</div>
+                    <span style={{ color: 'var(--text-dim)' }}>Event Aktif:</span>
+                    {settings.eventName ? (
+                      <div style={{ fontWeight: 700, color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <span>🎪</span>
+                        <span>{settings.eventName}</span>
+                      </div>
+                    ) : (
+                      <div style={{ fontWeight: 600, color: 'var(--text-dim)', fontStyle: 'italic' }}>
+                        Belum Diatur (Klik "Ubah Event / Booth" untuk mengisi)
+                      </div>
+                    )}
                   </div>
                   <div>
                     <span style={{ color: 'var(--text-dim)' }}>Lokasi:</span>
-                    <div style={{ fontWeight: 700, color: '#ffffff' }}>{settings.hallLocation}</div>
+                    <div style={{ fontWeight: 700, color: '#ffffff' }}>{settings.hallLocation || '-'}</div>
                   </div>
                 </div>
               </div>
@@ -156,9 +188,31 @@ export const SettingsPage: React.FC = () => {
                   padding: '16px',
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                  <User size={16} color="var(--pink)" />
-                  <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff', margin: 0 }}>Operator Kasir</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <User size={16} color="var(--pink)" />
+                    <h3 style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff', margin: 0 }}>Operator Kasir</h3>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={openBoothModal}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid var(--border-subtle)',
+                      color: 'var(--text-secondary)',
+                      borderRadius: '6px',
+                      padding: '4px 8px',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                  >
+                    <Edit3 size={11} />
+                    <span>Ganti</span>
+                  </button>
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
                   <div>

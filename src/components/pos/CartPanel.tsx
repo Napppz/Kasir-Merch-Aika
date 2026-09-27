@@ -35,7 +35,7 @@ export const CartPanel: React.FC<CartPanelProps> = ({ onBackToCatalog }) => {
     if (success) {
       setCouponFeedback('Diskon berhasil diterapkan!');
     } else {
-      setCouponFeedback('Kode diskon tidak valid (Gunakan COMICFEST)');
+      setCouponFeedback('Kode diskon tidak valid (Gunakan EVENT10)');
     }
     setTimeout(() => setCouponFeedback(null), 3000);
   };

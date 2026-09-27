@@ -67,6 +67,10 @@ interface PosContextType {
   openReceiptModal: (tx: Transaction) => void;
   closeReceiptModal: () => void;
   
+  isBoothModalOpen: boolean;
+  openBoothModal: () => void;
+  closeBoothModal: () => void;
+  
   processPayment: (method: PaymentMethod, paymentAmount: number) => Promise<Transaction>;
   simulateScanProduct: () => void;
   quickAddStock: (productId: string, amount: number) => Promise<void>;
@@ -140,6 +144,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [settings, setSettings] = useState<BoothSettings>(INITIAL_BOOTH_SETTINGS);
   const [currentPage, setCurrentPage] = useState<NavigationPage>('pos');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState<boolean>(false);
+  const [isBoothModalOpen, setIsBoothModalOpen] = useState<boolean>(false);
   const [checkoutInitialCash, setCheckoutInitialCash] = useState<number | null>(null);
   const [selectedReceiptTx, setSelectedReceiptTx] = useState<Transaction | null>(null);
   const [currentTimeString, setCurrentTimeString] = useState<string>('14:28:05 WIB');
@@ -181,15 +186,28 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCategories(cats);
       setTransactions(txs);
       if (sets) {
-        setSettings({
+        // Automatic cleanup if existing IndexedDB has legacy 'Comic Fest 2026'
+        const isOldComicFest = sets.eventName === 'Comic Fest 2026';
+        const cleanedEventName = isOldComicFest ? '' : (sets.eventName ?? '');
+        const cleanedHall = sets.hallLocation === 'Booth AH-20 • CF - 23 ICE BSD' ? 'Booth AH-20' : (sets.hallLocation ?? 'Booth AH-20');
+        const cleanedTerminalId = sets.terminalId === 'POS-CF26-8819' ? 'POS-01' : (sets.terminalId ?? 'POS-01');
+
+        const resolvedSettings: BoothSettings = {
           ...INITIAL_BOOTH_SETTINGS,
           ...sets,
+          eventName: cleanedEventName,
+          hallLocation: cleanedHall,
+          terminalId: cleanedTerminalId,
           quickCashAmounts: sets.quickCashAmounts || INITIAL_BOOTH_SETTINGS.quickCashAmounts || [10000, 20000, 50000, 100000],
           qrisMerchantName: sets.qrisMerchantName || INITIAL_BOOTH_SETTINGS.qrisMerchantName,
           qrisNmid: sets.qrisNmid || INITIAL_BOOTH_SETTINGS.qrisNmid,
           qrisTerminalCode: sets.qrisTerminalCode || INITIAL_BOOTH_SETTINGS.qrisTerminalCode,
           qrisImageUrl: sets.qrisImageUrl || INITIAL_BOOTH_SETTINGS.qrisImageUrl,
-        });
+        };
+        setSettings(resolvedSettings);
+        if (isOldComicFest) {
+          offlineDB.saveSettings(resolvedSettings).catch(console.error);
+        }
       }
       setStockMovements(movements);
       setOpnameSessions(sessions);
@@ -281,7 +299,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const applyDiscountCode = useCallback((code: string): boolean => {
     const clean = code.trim().toUpperCase();
-    if (clean === 'COMICFEST' || clean === 'EVENT10') {
+    if (clean === 'EVENT10' || clean === 'COMICFEST' || clean === 'AIKA10') {
       const discount = Math.round(cartSubtotal * 0.1);
       setDiscountAmount(discount);
       setDiscountCode(clean);
@@ -1136,7 +1154,10 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       // Esc -> Close modals
       if (e.key === 'Escape') {
-        if (isCheckoutOpen) {
+        if (isBoothModalOpen) {
+          e.preventDefault();
+          setIsBoothModalOpen(false);
+        } else if (isCheckoutOpen) {
           e.preventDefault();
           closeCheckout();
         } else if (selectedReceiptTx) {
@@ -1149,7 +1170,7 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [cart.length, isCheckoutOpen, selectedReceiptTx, openCheckout, closeCheckout, closeReceiptModal, simulateScanProduct, setCurrentPage]);
+  }, [cart.length, isCheckoutOpen, isBoothModalOpen, selectedReceiptTx, openCheckout, closeCheckout, closeReceiptModal, simulateScanProduct, setCurrentPage]);
 
   return (
     <PosContext.Provider
@@ -1189,6 +1210,9 @@ export const PosProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         closeCheckout,
         openReceiptModal,
         closeReceiptModal,
+        isBoothModalOpen,
+        openBoothModal: () => setIsBoothModalOpen(true),
+        closeBoothModal: () => setIsBoothModalOpen(false),
         processPayment,
         simulateScanProduct,
         quickAddStock,

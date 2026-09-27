@@ -278,6 +278,34 @@
   font-weight: 600;
 }
 
+.event-pill--clickable {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.event-pill--clickable:hover {
+  background: rgba(168, 85, 247, 0.22);
+  border-color: rgba(168, 85, 247, 0.55);
+  transform: translateY(-1px);
+}
+
+.event-pill--empty {
+  border-style: dashed;
+  background: rgba(168, 85, 247, 0.06);
+  color: #c084fc;
+}
+
+.event-pill-icon {
+  opacity: 0.6;
+  margin-left: 2px;
+  transition: opacity 0.2s;
+}
+
+.event-pill--clickable:hover .event-pill-icon {
+  opacity: 1;
+}
+
 .topbar-right {
   display: flex;
   align-items: center;

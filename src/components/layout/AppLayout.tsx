@@ -12,6 +12,7 @@ import { ReportsPage } from '../../pages/ReportsPage';
 import { SettingsPage } from '../../pages/SettingsPage';
 import { CheckoutModal } from '../pos/CheckoutModal';
 import { ThermalReceipt } from '../pos/ThermalReceipt';
+import { BoothEventConfigModal } from '../settings/BoothEventConfigModal';
 import { ToastContainer } from '../common/Toast';
 import { X } from 'lucide-react';
 import { useCapacitorNative } from '../../hooks/useCapacitorNative';
@@ -24,6 +25,8 @@ export const AppLayout: React.FC = () => {
     isCheckoutOpen, 
     closeCheckout, 
     closeReceiptModal, 
+    isBoothModalOpen,
+    closeBoothModal,
     settings, 
     toasts, 
     dismissToast 
@@ -38,6 +41,8 @@ export const AppLayout: React.FC = () => {
     closeCheckout,
     selectedReceiptTx,
     closeReceiptModal,
+    isBoothModalOpen,
+    closeBoothModal,
     isMobileSidebarOpen,
     setIsMobileSidebarOpen,
     currentPage,
@@ -96,6 +101,9 @@ export const AppLayout: React.FC = () => {
 
       {/* Checkout & Payment Modal */}
       <CheckoutModal />
+
+      {/* Booth & Event Configuration Modal */}
+      <BoothEventConfigModal isOpen={isBoothModalOpen} onClose={closeBoothModal} />
 
       {/* Standalone Receipt Modal (e.g. from Recent Transactions or Detail click) */}
       {!isCheckoutOpen && selectedReceiptTx && (
