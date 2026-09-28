@@ -22,7 +22,7 @@ export const PosPage: React.FC<PosPageProps> = ({
   return (
     <div className="page-container">
       {/* Subheader */}
-      <div className={`page-subheader ${mobileTab === 'cart' ? 'hide-on-mobile-cart' : ''}`}>
+      <div className={`page-subheader pos-page-subheader ${mobileTab === 'cart' ? 'hide-on-mobile-cart' : ''}`}>
         <div className="subheader-title-group">
           <h2>
             <ShoppingBag size={20} color="var(--primary-light)" />
